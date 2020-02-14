@@ -35,6 +35,10 @@
             'z':'zhihu.com',
             'm':'www.mcdonalds.com.cn'
         }
+        hashLocalStorage = JSON.parse(localStorage.getItem('xxx') || null)
+        if(hashLocalStorage){
+            hash = hashLocalStorage
+        }
         index = 0
         while(index < keys['length']){
             div1 = document.createElement('div');
@@ -46,13 +50,15 @@
                 kbd.textContent = row[index2]
                 button = document.createElement('button')
                 button.textContent = '编辑'
-                button.id = hash[index2]
+                button.id = row[index2]
                 button.onclick = function(something){
                     key = something['target']['id']
                     // 获得点击时的按钮
                     x = prompt('请输入一个网址')
                     // prompt是一个在浏览器中的弹出一个输入框
                     hash[key] = x
+                    localStorage.setItem('xxx',JSON.stringify(hash))
+                    console.log(hash)
                 }
                 kbd.appendChild(button)
                 div1.appendChild(kbd);
