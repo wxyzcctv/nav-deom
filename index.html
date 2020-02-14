@@ -9,7 +9,7 @@
 <body>
     <head></head>
     <main>
-        <div class="wrapper" id="zhangsan"></div>
+        <div class="wrapper" id="main"></div>
     </main>
     <footer></footer>
     <script>
@@ -30,7 +30,7 @@
             'i':'iqiyi.com',
             'o':'opera.com',
             'p':undefined,
-            'a':'acfun.tv',
+            'a':'amazon.cn',
             's':'sodu.com',
             'z':'zhihu.com',
             'm':'www.mcdonalds.com.cn'
@@ -42,12 +42,17 @@
         index = 0
         while(index < keys['length']){
             div1 = document.createElement('div');
-            zhangsan.appendChild(div1);
+            div1.className = 'row'
+            main.appendChild(div1);
             index2 = 0;
             row = keys[index]
             while(index2 < row['length']){
                 kbd = document.createElement('kbd');
-                kbd.textContent = row[index2]
+                span = document.createElement('span')
+                span.className = 'text'
+                span.textContent = row[index2]
+                kbd.appendChild(span)
+                kbd.className = 'key'
                 button = document.createElement('button')
                 button.textContent = '编辑'
                 button.id = row[index2]
@@ -60,7 +65,14 @@
                     localStorage.setItem('xxx',JSON.stringify(hash))
                     console.log(hash)
                 }
+                img = document.createElement('img')
+                if(hash[row[index2]]){
+                    img.src = 'http://' + hash[row[index2]] + '/favicon.ico'
+                }else{
+                    img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+                }
                 kbd.appendChild(button)
+                kbd.appendChild(img)
                 div1.appendChild(kbd);
                 index2 = index2 + 1
             }
