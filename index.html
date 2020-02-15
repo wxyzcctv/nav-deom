@@ -30,8 +30,9 @@
             'i':'iqiyi.com',
             'o':'opera.com',
             'p':undefined,
-            'a':'amazon.cn',
-            's':'sodu.com',
+            'a':'alibaba.com',
+            's':'sogou.com',
+            'k':'kugou.com',
             'z':'zhihu.com',
             'm':'www.mcdonalds.com.cn'
         }
@@ -53,24 +54,36 @@
                 span.textContent = row[index2]
                 kbd.appendChild(span)
                 kbd.className = 'key'
+
                 button = document.createElement('button')
                 button.textContent = '编辑'
                 button.id = row[index2]
                 button.onclick = function(something){
-                    key = something['target']['id']
+                    button2 = something['target']
+                    key = button2['id']
                     // 获得点击时的按钮
                     x = prompt('请输入一个网址')
                     // prompt是一个在浏览器中的弹出一个输入框
                     hash[key] = x
                     localStorage.setItem('xxx',JSON.stringify(hash))
-                    console.log(hash)
+                    img2 = button2.nextSibling
+                    img2.src = 'http://' + hash[row[index2]] + '/favicon.ico'
+                    img.onerror = function(x){
+                        x.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+                    }
                 }
                 img = document.createElement('img')
                 if(hash[row[index2]]){
                     img.src = 'http://' + hash[row[index2]] + '/favicon.ico'
+                    // 加载一个网页的icon，大部分情况下有用
                 }else{
                     img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+                    // 如果发现加载的网页不存在就使用其他的图片来代替对应的网站的icon
                 }
+                img.onerror = function(x){
+                    x.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+                }
+                // 如果发现网站存在，但是图片加载错误就用默认的图片代替
                 kbd.appendChild(button)
                 kbd.appendChild(img)
                 div1.appendChild(kbd);
