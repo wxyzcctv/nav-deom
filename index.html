@@ -13,91 +13,133 @@
     </main>
     <footer></footer>
     <script>
-        var keys = {
-            '0':{0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p','length':10},
-            '1':{0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l','length':9},
-            '2':{0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m','length':7},
-            'length':3
-        }
-        var hash = {
-            'q':'qq.com',
-            'w':'weibo.com',
-            'e':'ele.me',
-            'r':'renren.com',
-            't':'tianya.com',
-            'y':'youku.com',
-            'u':'uc.com',
-            'i':'iqiyi.com',
-            'o':'opera.com',
-            'p':undefined,
-            'a':'alibaba.com',
-            's':'sogou.com',
-            'k':'kugou.com',
-            'z':'zhihu.com',
-            'm':'www.mcdonalds.com.cn'
-        }
-        hashLocalStorage = JSON.parse(localStorage.getItem('xxx') || null)
-        if(hashLocalStorage){
-            hash = hashLocalStorage
-        }
-        index = 0
-        while(index < keys['length']){
-            div1 = document.createElement('div');
-            div1.className = 'row'
-            main.appendChild(div1);
-            index2 = 0;
-            row = keys[index]
-            while(index2 < row['length']){
-                kbd = document.createElement('kbd');
-                span = document.createElement('span')
-                span.className = 'text'
-                span.textContent = row[index2]
-                kbd.appendChild(span)
-                kbd.className = 'key'
+        // 1.初始化数据
+        var hashA = init()
+        var keys = hashA.keys
+        var hash = hashA.hash
 
-                button = document.createElement('button')
-                button.textContent = '编辑'
-                button.id = row[index2]
-                button.onclick = function(something){
-                    button2 = something['target']
-                    key = button2['id']
-                    // 获得点击时的按钮
-                    x = prompt('请输入一个网址')
-                    // prompt是一个在浏览器中的弹出一个输入框
-                    hash[key] = x
-                    localStorage.setItem('xxx',JSON.stringify(hash))
-                    img2 = button2.nextSibling
-                    img2.src = 'http://' + hash[row[index2]] + '/favicon.ico'
-                    img.onerror = function(x){
-                        x.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
-                    }
-                }
-                img = document.createElement('img')
-                if(hash[row[index2]]){
-                    img.src = 'http://' + hash[row[index2]] + '/favicon.ico'
-                    // 加载一个网页的icon，大部分情况下有用
-                }else{
-                    img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
-                    // 如果发现加载的网页不存在就使用其他的图片来代替对应的网站的icon
-                }
+        // 2.创建键盘
+        gennerateKeyBoard(keys,hash)
+
+        // 3.监听键盘
+        lisenUser(hash)
+
+        // 下面是工具函数
+        function getLocalStorage(name){
+            return JSON.parse(localStorage.getItem(name) || null)
+        }
+        function targ(tragName,attributes){
+            var element = document.createElement(tragName)
+            for(var key in attributes){ //key为className、textContent、id
+                element[key] = attributes[key]
+            }
+            return element
+        }
+        function createSpan(textContent){
+            var span = document.createElement('span');
+            span.className = 'text';
+            span.textContent = textContent;
+            return span
+        }
+        function createButtom(id){
+            var button = document.createElement('button')
+            button.textContent = '编辑'
+            button.id = id
+            button.onclick = function(something){
+                var button2 = something['target']
+                var key = button2['id']
+                // 获得点击时的按钮
+                var x = prompt('请输入一个网址')
+                // prompt是一个在浏览器中的弹出一个输入框
+                hash[key] = x
+                localStorage.setItem('xxx',JSON.stringify(hash))
+                var img2 = button2.nextSibling
+                img2.src = 'http://' + hash[row[index2]] + '/favicon.ico'
                 img.onerror = function(x){
                     x.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
                 }
-                // 如果发现网站存在，但是图片加载错误就用默认的图片代替
-                kbd.appendChild(button)
-                kbd.appendChild(img)
-                div1.appendChild(kbd);
-                index2 = index2 + 1
             }
-            index = index + 1;
+            return button
         }
-        document.onkeypress = function(something){
-            key = something['key'] // 这里主要是获取点击获得的按键
-            website = hash[key]
-            // location.href = 'http://' + website //在打开的这个网页中打开对应的网页
-            window.open('http://' + website, '_blank') 
-            //通过另一种方式打开新的网页，这个网页是在一个新的网站打开的
+        function createImg(domain){
+            var img = document.createElement('img')
+            if(domain){
+                img.src = 'http://' + domain + '/favicon.ico'
+                // 加载一个网页的icon，大部分情况下有用
+            }else{
+                img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+                // 如果发现加载的网页不存在就使用其他的图片来代替对应的网站的icon
+            }
+            img.onerror = function(x){
+                x.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+            }
+            // 如果发现网站存在，但是图片加载错误就用默认的图片代替
+            return img
+        }
+        function init(){
+            var keys = {
+                '0':{0:'q',1:'w',2:'e',3:'r',4:'t',5:'y',6:'u',7:'i',8:'o',9:'p','length':10},
+                '1':{0:'a',1:'s',2:'d',3:'f',4:'g',5:'h',6:'j',7:'k',8:'l','length':9},
+                '2':{0:'z',1:'x',2:'c',3:'v',4:'b',5:'n',6:'m','length':7},
+                'length':3
+            }
+            var hash = {
+                'q':'qq.com',
+                'w':'weibo.com',
+                'e':'ele.me',
+                'r':'renren.com',
+                't':'tianya.com',
+                'y':'youku.com',
+                'u':'uc.com',
+                'i':'iqiyi.com',
+                'o':'opera.com',
+                'p':undefined,
+                'a':'alibaba.com',
+                's':'sogou.com',
+                'k':'kugou.com',
+                'z':'zhihu.com',
+                'm':'www.mcdonalds.com.cn'
+            }
+            hashLocalStorage = getLocalStorage('xxx')
+            if(hashLocalStorage){
+                hash = hashLocalStorage
+            }
+            return {
+                "keys":keys,
+                "hash":hash
+            }
+        }
+        function gennerateKeyBoard(keys,hash){
+            for(var index=0; index<keys['length'];index = index + 1){
+                var div1 = targ('div',{className:'row'});
 
+                main.appendChild(div1);
+
+                var row = keys[index]
+                for(var index2 = 0;index2 < row['length']; index2 = index2 + 1){
+                    var span = createSpan(row[index2])
+
+                    var button = createButtom(row[index2])
+
+                    var img = createImg(hash[row[index2]])
+
+                    var kbd = targ('kbd');
+                    kbd.className = 'key'
+                    kbd.appendChild(span)
+                    kbd.appendChild(button)
+                    kbd.appendChild(img)
+                    div1.appendChild(kbd);
+                }
+            }
+        }
+        function lisenUser(hash){
+            document.onkeypress = function(something){
+                key = something['key'] // 这里主要是获取点击获得的按键
+                website = hash[key]
+                // location.href = 'http://' + website //在打开的这个网页中打开对应的网页
+                window.open('http://' + website, '_blank') 
+                //通过另一种方式打开新的网页，这个网页是在一个新的网站打开的
+            }
         }
     </script>
 </body>
